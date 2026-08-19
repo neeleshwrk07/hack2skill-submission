@@ -5,6 +5,7 @@ const cors = require('cors');
 const { MongoMemoryServer } = require('mongodb-memory-server');
 const journeyRoutes = require('./routes/journeyRoutes');
 const contactRoutes = require('./routes/contactRoutes');
+const zoneRoutes = require('./routes/zoneRoutes');
 const Journey = require('./models/Journey');
 
 const app = express();
@@ -28,6 +29,7 @@ app.get('/api/health', (req, res) => {
 
 app.use('/api/journeys', journeyRoutes);
 app.use('/api/contacts', contactRoutes);
+app.use('/api/zones', zoneRoutes);
 
 // Serve static frontend files
 app.use(express.static(path.join(__dirname, '../frontend/dist')));
