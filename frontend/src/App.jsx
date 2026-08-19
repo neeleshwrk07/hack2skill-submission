@@ -13,7 +13,7 @@ export default function App() {
   
   const [currentTab, setCurrentTab] = useState('home');
   const [timer, setTimer] = useState(null);
-  const [timerDuration, setTimerDuration] = useState(10); // Default 10 seconds
+  const [timerDuration, setTimerDuration] = useState(1800); // Default 30 minutes
 
   // Danger Zone Form
   const [reportAddress, setReportAddress] = useState('');
@@ -60,6 +60,14 @@ export default function App() {
   const triggerAlert = () => {
     setIsAlert(true);
     setTimer(null);
+  };
+
+  const formatTime = (totalSeconds) => {
+    const h = Math.floor(totalSeconds / 3600);
+    const m = Math.floor((totalSeconds % 3600) / 60);
+    const s = totalSeconds % 60;
+    if (h > 0) return `${h}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
   };
 
   const reportDangerZone = async (e) => {
@@ -118,8 +126,8 @@ export default function App() {
           {timer !== null ? (
             <div style={{ textAlign: 'center' }}>
               <h2 style={{ fontSize: '2rem', color: 'var(--accent-red)', marginBottom: '24px' }}>SENDING ALERT IN</h2>
-              <div style={{ fontSize: '10rem', fontWeight: 900, color: 'white', lineHeight: 1, marginBottom: '40px', textShadow: '0 0 40px rgba(231, 54, 49, 0.8)' }}>
-                {timer}
+              <div style={{ fontSize: '6rem', fontWeight: 900, color: 'white', lineHeight: 1, marginBottom: '40px', textShadow: '0 0 40px rgba(231, 54, 49, 0.8)' }}>
+                {formatTime(timer)}
               </div>
               <button className="btn-secondary" onClick={cancelSosSequence} style={{ fontSize: '1.5rem', padding: '16px 32px', width: 'auto', background: 'var(--text-muted)' }}>
                 CANCEL
@@ -149,22 +157,22 @@ export default function App() {
                   Alert Delay Timer
                 </label>
                 <div style={{ display: 'flex', gap: '8px', background: 'rgba(255,255,255,0.05)', padding: '6px', borderRadius: '12px', border: '1px solid var(--glass-border)' }}>
-                  {[5, 10, 30].map(duration => (
+                  {[{label: '30m', value: 1800}, {label: '60m', value: 3600}, {label: '2h', value: 7200}, {label: '3h', value: 10800}].map(option => (
                     <button
-                      key={duration}
-                      onClick={() => setTimerDuration(duration)}
+                      key={option.value}
+                      onClick={() => setTimerDuration(option.value)}
                       style={{
                         padding: '8px 16px',
                         borderRadius: '8px',
                         border: 'none',
-                        background: timerDuration === duration ? 'var(--accent-red)' : 'transparent',
-                        color: timerDuration === duration ? 'white' : 'var(--text-muted)',
+                        background: timerDuration === option.value ? 'var(--accent-red)' : 'transparent',
+                        color: timerDuration === option.value ? 'white' : 'var(--text-muted)',
                         fontWeight: 600,
                         cursor: 'pointer',
                         transition: 'all 0.2s'
                       }}
                     >
-                      {duration}s
+                      {option.label}
                     </button>
                   ))}
                 </div>
