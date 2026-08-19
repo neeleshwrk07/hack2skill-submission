@@ -13,6 +13,17 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
+app.get('/', (req, res) => {
+  res.json({
+    status: 'online',
+    service: 'AURA Safety Net Backend API',
+    endpoints: {
+      contacts: '/api/contacts',
+      journeys: '/api/journeys'
+    }
+  });
+});
+
 app.use('/api/journeys', journeyRoutes);
 app.use('/api/contacts', contactRoutes);
 
