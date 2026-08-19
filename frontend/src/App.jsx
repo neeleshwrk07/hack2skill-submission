@@ -82,7 +82,8 @@ export default function App() {
           <span>Community</span>
           <span>Support</span>
         </div>
-        <button className="nav-sos-btn" onClick={triggerAlert}>
+        <button className={`nav-sos-btn ${isAlert ? 'alert-active' : ''}`} onClick={triggerAlert}>
+          <AlertOctagon size={20} color="white" />
           SOS NOW
         </button>
       </nav>
@@ -171,6 +172,22 @@ export default function App() {
 
         </div>
       </div>
+
+      {/* Full Screen Emergency Overlay */}
+      {isAlert && (
+        <div className="alert-backdrop">
+          <div className="alert-modal">
+            <div className="alert-icon-container">
+              <AlertOctagon size={64} color="var(--accent-red)" />
+            </div>
+            <h1>EMERGENCY ACTIVE</h1>
+            <p>Your trusted contacts have been notified with your live location.</p>
+            <button className="btn-secondary" onClick={() => setIsAlert(false)} style={{ padding: '16px', fontSize: '1.1rem' }}>
+              Cancel Alert (I'm Safe)
+            </button>
+          </div>
+        </div>
+      )}
     </>
   );
 }
