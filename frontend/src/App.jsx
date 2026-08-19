@@ -14,6 +14,10 @@ export default function App() {
   const [currentTab, setCurrentTab] = useState('home');
   const [timer, setTimer] = useState(null);
 
+  // Danger Zone Form
+  const [reportAddress, setReportAddress] = useState('');
+  const [reportDesc, setReportDesc] = useState('');
+
   useEffect(() => {
     fetchContacts();
   }, []);
@@ -228,6 +232,7 @@ export default function App() {
 
         </div>
       </div>
+      )}
 
       {/* Full Screen Emergency Overlay */}
       {isAlert && (
