@@ -13,6 +13,7 @@ export default function App() {
   
   const [currentTab, setCurrentTab] = useState('home');
   const [timer, setTimer] = useState(null);
+  const [timerDuration, setTimerDuration] = useState(10); // Default 10 seconds
 
   // Danger Zone Form
   const [reportAddress, setReportAddress] = useState('');
@@ -48,7 +49,7 @@ export default function App() {
 
   const startSosSequence = () => {
     if (!isAlert) {
-      setTimer(10); // Start 10 second countdown
+      setTimer(timerDuration);
     }
   };
 
@@ -117,31 +118,58 @@ export default function App() {
           {timer !== null ? (
             <div style={{ textAlign: 'center' }}>
               <h2 style={{ fontSize: '2rem', color: 'var(--accent-red)', marginBottom: '24px' }}>SENDING ALERT IN</h2>
-              <div style={{ fontSize: '12rem', fontWeight: 900, color: 'white', lineHeight: 1, marginBottom: '40px', textShadow: '0 0 40px rgba(231, 54, 49, 0.8)' }}>
+              <div style={{ fontSize: '10rem', fontWeight: 900, color: 'white', lineHeight: 1, marginBottom: '40px', textShadow: '0 0 40px rgba(231, 54, 49, 0.8)' }}>
                 {timer}
               </div>
-              <button className="btn-secondary" onClick={cancelSosSequence} style={{ fontSize: '1.5rem', padding: '20px 40px', width: 'auto', background: 'var(--text-muted)' }}>
+              <button className="btn-secondary" onClick={cancelSosSequence} style={{ fontSize: '1.5rem', padding: '16px 32px', width: 'auto', background: 'var(--text-muted)' }}>
                 CANCEL
               </button>
             </div>
           ) : (
-            <button 
-              onClick={startSosSequence}
-              style={{
-                width: '350px', height: '350px', borderRadius: '50%',
-                background: 'linear-gradient(135deg, #ff3b30, #b91d17)',
-                color: 'white', border: '12px solid rgba(255,255,255,0.1)',
-                boxShadow: '0 20px 60px rgba(231, 54, 49, 0.6), inset 0 10px 20px rgba(255, 255, 255, 0.3)',
-                display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center',
-                cursor: 'pointer', transition: 'transform 0.2s'
-              }}
-              onMouseDown={e => e.currentTarget.style.transform = 'scale(0.95)'}
-              onMouseUp={e => e.currentTarget.style.transform = 'scale(1)'}
-            >
-              <AlertOctagon size={100} style={{ marginBottom: '16px' }} />
-              <span style={{ fontSize: '3rem', fontWeight: 900, letterSpacing: '4px' }}>SOS</span>
-              <span style={{ fontSize: '1.2rem', fontWeight: 600, opacity: 0.9 }}>TAP TO START TIMER</span>
-            </button>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '32px' }}>
+              <button 
+                onClick={startSosSequence}
+                style={{
+                  width: '250px', height: '250px', borderRadius: '50%',
+                  background: 'linear-gradient(135deg, #ff3b30, #b91d17)',
+                  color: 'white', border: '8px solid rgba(255,255,255,0.1)',
+                  boxShadow: '0 15px 40px rgba(231, 54, 49, 0.6), inset 0 8px 16px rgba(255, 255, 255, 0.3)',
+                  display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center',
+                  cursor: 'pointer', transition: 'transform 0.2s'
+                }}
+                onMouseDown={e => e.currentTarget.style.transform = 'scale(0.95)'}
+                onMouseUp={e => e.currentTarget.style.transform = 'scale(1)'}
+              >
+                <AlertOctagon size={80} style={{ marginBottom: '12px' }} />
+                <span style={{ fontSize: '2.5rem', fontWeight: 900, letterSpacing: '2px' }}>SOS</span>
+              </button>
+              
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
+                <label style={{ color: 'var(--text-muted)', fontSize: '0.9rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '1px' }}>
+                  Alert Delay Timer
+                </label>
+                <div style={{ display: 'flex', gap: '8px', background: 'rgba(255,255,255,0.05)', padding: '6px', borderRadius: '12px', border: '1px solid var(--glass-border)' }}>
+                  {[5, 10, 30].map(duration => (
+                    <button
+                      key={duration}
+                      onClick={() => setTimerDuration(duration)}
+                      style={{
+                        padding: '8px 16px',
+                        borderRadius: '8px',
+                        border: 'none',
+                        background: timerDuration === duration ? 'var(--accent-red)' : 'transparent',
+                        color: timerDuration === duration ? 'white' : 'var(--text-muted)',
+                        fontWeight: 600,
+                        cursor: 'pointer',
+                        transition: 'all 0.2s'
+                      }}
+                    >
+                      {duration}s
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
           )}
         </div>
       ) : (

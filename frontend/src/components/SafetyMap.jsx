@@ -102,6 +102,12 @@ export default function SafetyMap({ apiBase, zones, setZones }) {
     setSafetyScore(score);
   };
 
+  const getZoneColor = (severity) => {
+    if (severity >= 80) return 'var(--danger)'; // Red
+    if (severity >= 50) return '#f59e0b'; // Amber
+    return '#eab308'; // Yellow
+  };
+
   const getScoreColor = () => {
     if (safetyScore >= 80) return 'var(--safe)';
     if (safetyScore >= 50) return '#f59e0b'; // Amber
