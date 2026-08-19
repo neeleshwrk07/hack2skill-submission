@@ -13,7 +13,9 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-app.get('/', (req, res) => {
+const path = require('path');
+
+app.get('/api/health', (req, res) => {
   res.json({
     status: 'online',
     service: 'AURA Safety Net Backend API',
@@ -26,6 +28,14 @@ app.get('/', (req, res) => {
 
 app.use('/api/journeys', journeyRoutes);
 app.use('/api/contacts', contactRoutes);
+
+// Serve static frontend files
+app.use(express.static(path.join(__dirname, '../frontend/dist')));
+
+// Catch-all route to serve React app for any other request
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
+});
 
 let mongoServer;
 

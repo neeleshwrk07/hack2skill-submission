@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Shield, Clock, Phone, AlertOctagon, CheckCircle2, UserPlus, ArrowLeft, Mic, Sun, Moon } from 'lucide-react';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'https://hack2skill-submissionsos.onrender.com/api';
+const API_BASE = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '/api' : 'http://localhost:5000/api');
 
 export default function App() {
   const [view, setView] = useState('dashboard'); // dashboard, setup, active, contacts
