@@ -103,39 +103,43 @@ export default function App() {
           <div className={`panel-card ${isAlert ? 'emergency-card emergency-pulse' : ''}`}>
             <div className="panel-title" style={{ color: isAlert ? 'var(--accent-red)' : 'var(--text-main)' }}>
               <span>ACTIVE EMERGENCY</span>
-              <AlertOctagon size={20} />
+              <AlertOctagon size={20} color={isAlert ? 'var(--accent-red)' : 'var(--text-muted)'} />
             </div>
             {isAlert ? (
-              <>
-                <p style={{ color: 'var(--accent-red)', fontWeight: 600, marginBottom: '16px' }}>1 active emergency sequence triggered. Contacts notified.</p>
-                <button className="btn-secondary" onClick={() => setIsAlert(false)}>Cancel Alert</button>
-              </>
+              <p style={{ color: 'var(--accent-red)', fontWeight: 600, fontSize: '0.95rem', margin: 0 }}>
+                1 active emergency sequence triggered. Full alert active.
+              </p>
             ) : (
-              <p style={{ color: 'var(--text-muted)' }}>0 active emergencies.</p>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--safe)' }}>
+                <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--safe)', boxShadow: '0 0 8px var(--safe)' }}></div>
+                <span style={{ fontSize: '0.95rem', fontWeight: 500 }}>All systems normal. 0 active emergencies.</span>
+              </div>
             )}
           </div>
 
           {/* Contacts List */}
-          <div className="panel-card">
-            <div className="panel-title">
+          <div className="panel-card" style={{ display: 'flex', flexDirection: 'column', maxHeight: '300px' }}>
+            <div className="panel-title" style={{ flexShrink: 0 }}>
               <span>MY CONTACTS</span>
               <UserPlus size={20} color="var(--accent-secondary)" />
             </div>
-            {contacts.length === 0 ? (
-              <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>No contacts loaded.</p>
-            ) : (
-              contacts.map(c => (
-                <div key={c._id || c.phone} style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
-                  <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'var(--accent-secondary)', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                    {c.name.charAt(0)}
+            <div style={{ overflowY: 'auto', paddingRight: '12px', flex: 1 }}>
+              {contacts.length === 0 ? (
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>No contacts loaded.</p>
+              ) : (
+                contacts.map(c => (
+                  <div key={c._id || c.phone} style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px', background: 'rgba(0,0,0,0.2)', padding: '10px 12px', borderRadius: '12px' }}>
+                    <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: 'linear-gradient(135deg, var(--accent-secondary), #174246)', display: 'flex', justifyContent: 'center', alignItems: 'center', fontWeight: 'bold' }}>
+                      {c.name.charAt(0)}
+                    </div>
+                    <div>
+                      <div style={{ fontWeight: 600, fontSize: '0.95rem' }}>{c.name}</div>
+                      <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{c.phone}</div>
+                    </div>
                   </div>
-                  <div>
-                    <div style={{ fontWeight: 600 }}>{c.name}</div>
-                    <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{c.phone}</div>
-                  </div>
-                </div>
-              ))
-            )}
+                ))
+              )}
+            </div>
           </div>
 
           {/* Report Danger Zone Form */}
