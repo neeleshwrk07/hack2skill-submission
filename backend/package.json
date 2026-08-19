@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Safety Net App Backend",
   "main": "server.js",
+  "license": "MIT",
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js"

@@ -2,6 +2,7 @@
   "name": "hack2skill-root",
   "version": "1.0.0",
   "description": "Root package for Render deployment",
+  "license": "MIT",
   "scripts": {
     "install": "cd backend && npm install",
     "build": "cd backend && npm install",

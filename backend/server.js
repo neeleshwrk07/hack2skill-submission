@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -19,15 +20,27 @@ let mongoServer;
 
 const startServer = async () => {
   try {
-    // Start In-Memory MongoDB
-    mongoServer = await MongoMemoryServer.create();
-    const mongoUri = mongoServer.getUri();
+    if (process.env.MONGODB_URI) {
+      await mongoose.connect(process.env.MONGODB_URI, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      });
+      console.log(`Connected to external MongoDB at ${process.env.MONGODB_URI}`);
+    } else {
+      // Start In-Memory MongoDB (compatible with Debian 12/Bookworm on Render)
+      mongoServer = await MongoMemoryServer.create({
+        binary: {
+          version: '7.0.3',
+        },
+      });
+      const mongoUri = mongoServer.getUri();
 
-    await mongoose.connect(mongoUri, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-    console.log(`In-memory MongoDB connected successfully at ${mongoUri}`);
+      await mongoose.connect(mongoUri, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      });
+      console.log(`In-memory MongoDB connected successfully at ${mongoUri}`);
+    }
 
     app.listen(PORT, () => {
       console.log(`Backend Server running on port ${PORT}`);
