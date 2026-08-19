@@ -11,13 +11,25 @@ export default function App() {
   const [isAlert, setIsAlert] = useState(false);
   const [contacts, setContacts] = useState([]);
   
-  // Danger Zone Form
-  const [reportAddress, setReportAddress] = useState('');
-  const [reportDesc, setReportDesc] = useState('');
+  const [currentTab, setCurrentTab] = useState('home');
+  const [timer, setTimer] = useState(null);
 
   useEffect(() => {
     fetchContacts();
   }, []);
+
+  // Timer logic
+  useEffect(() => {
+    let interval = null;
+    if (timer !== null && timer > 0) {
+      interval = setInterval(() => setTimer(t => t - 1), 1000);
+    } else if (timer === 0) {
+      // Timer finished! Trigger alert!
+      setIsAlert(true);
+      setTimer(null);
+    }
+    return () => clearInterval(interval);
+  }, [timer]);
 
   const fetchContacts = async () => {
     try {
@@ -30,9 +42,19 @@ export default function App() {
     }
   };
 
+  const startSosSequence = () => {
+    if (!isAlert) {
+      setTimer(10); // Start 10 second countdown
+    }
+  };
+
+  const cancelSosSequence = () => {
+    setTimer(null);
+  };
+
   const triggerAlert = () => {
     setIsAlert(true);
-    // In a real app, API call to trigger emergency sequence would happen here
+    setTimer(null);
   };
 
   const reportDangerZone = async (e) => {
@@ -40,13 +62,11 @@ export default function App() {
     if (!reportAddress) return;
 
     try {
-      // Geocode the address
       const res = await axios.get(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(reportAddress)}`);
       if (res.data && res.data.length > 0) {
         const lat = parseFloat(res.data[0].lat);
         const lon = parseFloat(res.data[0].lon);
         
-        // Post to backend
         const postRes = await axios.post(`${API_BASE}/zones`, {
           address: reportAddress,
           lat,
@@ -54,7 +74,6 @@ export default function App() {
           description: reportDesc
         });
         
-        // Update local state
         setZones([...zones, postRes.data]);
         setReportAddress('');
         setReportDesc('');
@@ -77,19 +96,52 @@ export default function App() {
           HER SAFE ZONE
         </div>
         <div className="nav-links">
-          <span>Home</span>
-          <span className="active">Safe Maps</span>
+          <span className={currentTab === 'home' ? 'active' : ''} onClick={() => setCurrentTab('home')}>Home</span>
+          <span className={currentTab === 'map' ? 'active' : ''} onClick={() => setCurrentTab('map')}>Safe Maps</span>
           <span>Community</span>
           <span>Support</span>
         </div>
-        <button className={`nav-sos-btn ${isAlert ? 'alert-active' : ''}`} onClick={triggerAlert}>
+        <button className={`nav-sos-btn ${isAlert || timer !== null ? 'alert-active' : ''}`} onClick={triggerAlert}>
           <AlertOctagon size={20} color="white" />
           SOS NOW
         </button>
       </nav>
 
-      {/* Main Dashboard Layout */}
-      <div className="dashboard-container">
+      {/* Conditional Rendering Based on Tab */}
+      {currentTab === 'home' ? (
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'radial-gradient(circle at center, #1a4548 0%, #113639 100%)' }}>
+          {timer !== null ? (
+            <div style={{ textAlign: 'center' }}>
+              <h2 style={{ fontSize: '2rem', color: 'var(--accent-red)', marginBottom: '24px' }}>SENDING ALERT IN</h2>
+              <div style={{ fontSize: '12rem', fontWeight: 900, color: 'white', lineHeight: 1, marginBottom: '40px', textShadow: '0 0 40px rgba(231, 54, 49, 0.8)' }}>
+                {timer}
+              </div>
+              <button className="btn-secondary" onClick={cancelSosSequence} style={{ fontSize: '1.5rem', padding: '20px 40px', width: 'auto', background: 'var(--text-muted)' }}>
+                CANCEL
+              </button>
+            </div>
+          ) : (
+            <button 
+              onClick={startSosSequence}
+              style={{
+                width: '350px', height: '350px', borderRadius: '50%',
+                background: 'linear-gradient(135deg, #ff3b30, #b91d17)',
+                color: 'white', border: '12px solid rgba(255,255,255,0.1)',
+                boxShadow: '0 20px 60px rgba(231, 54, 49, 0.6), inset 0 10px 20px rgba(255, 255, 255, 0.3)',
+                display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center',
+                cursor: 'pointer', transition: 'transform 0.2s'
+              }}
+              onMouseDown={e => e.currentTarget.style.transform = 'scale(0.95)'}
+              onMouseUp={e => e.currentTarget.style.transform = 'scale(1)'}
+            >
+              <AlertOctagon size={100} style={{ marginBottom: '16px' }} />
+              <span style={{ fontSize: '3rem', fontWeight: 900, letterSpacing: '4px' }}>SOS</span>
+              <span style={{ fontSize: '1.2rem', fontWeight: 600, opacity: 0.9 }}>TAP TO START TIMER</span>
+            </button>
+          )}
+        </div>
+      ) : (
+        <div className="dashboard-container">
         
         {/* Left Side: Interactive Map */}
         <div className="map-section">
