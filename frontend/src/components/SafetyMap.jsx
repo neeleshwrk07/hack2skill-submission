@@ -146,21 +146,25 @@ export default function SafetyMap({ apiBase, zones, setZones }) {
           <Popup>Current Focus Area</Popup>
         </Marker>
 
-        {/* Danger Zones (Red Circles) */}
-        {zones && zones.map((zone, idx) => (
-          <Circle 
-            key={idx}
-            center={[zone.lat, zone.lng]} 
-            pathOptions={{ color: 'var(--danger)', fillColor: 'var(--danger)', fillOpacity: 0.4 }} 
-            radius={300}
-          >
-            <Popup>
-              <strong>Reported Danger Zone</strong><br/>
-              {zone.address}<br/>
-              {zone.description}
-            </Popup>
-          </Circle>
-        ))}
+        {/* Danger Zones (Color coded by severity) */}
+        {zones && zones.map((zone, idx) => {
+          const zoneColor = getZoneColor(zone.severity || 80);
+          return (
+            <Circle 
+              key={idx}
+              center={[zone.lat, zone.lng]} 
+              pathOptions={{ color: zoneColor, fillColor: zoneColor, fillOpacity: 0.4 }} 
+              radius={zone.severity >= 80 ? 400 : 250}
+            >
+              <Popup>
+                <strong>Reported Danger Zone</strong><br/>
+                {zone.address}<br/>
+                <span style={{color: zoneColor, fontWeight: 'bold'}}>{zone.severity >= 80 ? 'Extreme Danger' : 'Caution/Moderate'}</span><br/>
+                {zone.description}
+              </Popup>
+            </Circle>
+          );
+        })}
       </MapContainer>
     </div>
   );

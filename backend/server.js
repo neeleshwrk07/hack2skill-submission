@@ -65,6 +65,19 @@ const startServer = async () => {
       console.log(`In-memory MongoDB connected successfully at ${mongoUri}`);
     }
 
+    // Seed Danger Zones if empty
+    const DangerZone = require('./models/DangerZone');
+    const zoneCount = await DangerZone.countDocuments();
+    if (zoneCount === 0) {
+      await DangerZone.insertMany([
+        { address: 'Tenderloin, San Francisco', lat: 37.7833, lng: -122.4167, description: 'High crime rate area, extreme caution recommended.', severity: 95 },
+        { address: 'Mission St & 16th, SF', lat: 37.765, lng: -122.419, description: 'Reports of harassment in the evenings.', severity: 85 },
+        { address: 'Golden Gate Park (Night)', lat: 37.769, lng: -122.486, description: 'Unlit areas, highly isolated after dark.', severity: 60 },
+        { address: 'Market St Station', lat: 37.79, lng: -122.39, description: 'Minor incidents and pickpockets.', severity: 40 }
+      ]);
+      console.log("Seeded default danger zones.");
+    }
+
     app.listen(PORT, () => {
       console.log(`Backend Server running on port ${PORT}`);
       startDeadMansSwitch();
